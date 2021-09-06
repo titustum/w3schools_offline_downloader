@@ -2,19 +2,15 @@ from bs4 import BeautifulSoup
 import requests
 import os
 
-categ = "nodejs"#name of the tutorial you want to save offline
+# Customize your categories here. Add and remove
+#Web developer languages
+categories = ["html", "css", "js", "jquery", "nodejs", "bootstrap4", "php", "sql", "mysql"]
+
+#App developer languages
+# categories = ["java", "kotlin", "python", "cpp", "cs"]
 
 
 baseurl = "https://www.w3schools.com/"
-
-def get_assets(categ):
-	url = baseurl+categ
-	html_string = get_htmlstring(url)
-	soup = BeautifulSoup(html_string, "html.parser")
-	csslinks = []
-	for div in soup.findAll('div', attrs={'id':'leftmenuinnerinner'}):
-		for link in div.findAll('a', attrs={"target":"_top"}):
-			links.append(link.get('href'))
 
 
 # Gets html response
@@ -31,7 +27,6 @@ def get_links(categ):
 	for div in soup.findAll('div', attrs={'id':'leftmenuinnerinner'}):
 		for link in div.findAll('a', attrs={"target":"_top"}):
 			links.append(link.get('href'))
-			print(link)
 	return links
 
 # Does some replacements
@@ -49,25 +44,32 @@ def get_replaced_string(html_string):
 
 # Saves html pages into some folder
 def save_page(replaced_string, link, categ):
-	fname = link.split(".")[0] + ".html"
-	if not os.path.exists(categ):
-	    os.makedirs(categ)
-	f = open(f"{categ}/{fname}", "w")
-	f.write(replaced_string)
-	f.close()
+	try:
+		fname = link.split(".")[0] + ".html"
+		if not os.path.exists(categ):
+		    os.makedirs(categ)
+		f = open(f"{categ}/{fname}", "w")
+		f.write(replaced_string)
+		f.close()
+	except Exception as e:
+		print(e)
+		pass
+	
 
 
 # default func
 def run():
-	links = get_links(categ)
-	print(f"Now scrapping {categ}...")
-	for link in links:
-		page_url = baseurl + categ +"/"+ link
-		# print(page_url)
-		html_string = get_htmlstring(page_url)
-		replaced_html = get_replaced_string(html_string)
-		save_page(replaced_html, link, categ)
-	print("Scrapping completed!")
+
+	for categ in categories:
+		links = get_links(categ)
+		print(f"Now scrapping {categ}...")
+		for link in links:
+			page_url = baseurl + categ +"/"+ link
+			print(page_url)
+			html_string = get_htmlstring(page_url)
+			replaced_html = get_replaced_string(html_string)
+			save_page(replaced_html, link, categ)
+		print("Scrapping completed!")
 
 if __name__ =="__main__":
 	run()
