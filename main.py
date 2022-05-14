@@ -4,10 +4,17 @@ import os
 
 # Customize your categories here. Add and remove
 #Web developer languages
-categories = ["html", "css", "js", "jquery", "nodejs", "bootstrap4", "php", "sql", "mysql"]
+#categories = ["html", "css", "js", "jquery", "nodejs", "bootstrap4", "php", "sql", "mysql", "java", "kotlin", "python", "cpp", "cs"]
 
 #App developer languages
 # categories = ["java", "kotlin", "python", "cpp", "cs"]
+
+#categories = ['react', 'typescript', 'angular', 'c']
+
+#categories = ['bootstrap5', 'django']
+
+#categories = ['icons', 'colors', 'howto']
+categories = ['django', 'r']
 
 
 baseurl = "https://www.w3schools.com/"
@@ -36,7 +43,9 @@ def get_replaced_string(html_string):
 	img_replaced = lib_replaced.replace("/images", "../images")
 	php_replaced = img_replaced.replace(".php", ".html")
 	asp_replaced = php_replaced.replace(".asp", ".html")
-	jq_replaced = asp_replaced.replace("https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js", "../lib/jquery.min.js")
+	top_links_replaced = asp_replaced.replace("href='/", "href='../")
+	top_links_replaced2 = top_links_replaced.replace("""href="/""", """href="../""")
+	jq_replaced = top_links_replaced2.replace("https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js", "../lib/jquery.min.js")
 	footer_replaced = jq_replaced.replace("w3schools_footer.js?update=20210902", "w3schools_footer.js")
 	loader_replaced = footer_replaced.replace("my-learning.js?v=1.0.2", "my-learning.js")
 	cdn_replaced = loader_replaced.replace("https://cdn.snigelweb.com/adengine/w3schools.com/loader.js", "../lib/loader.js")
@@ -48,7 +57,7 @@ def save_page(replaced_string, link, categ):
 		fname = link.split(".")[0] + ".html"
 		if not os.path.exists(categ):
 		    os.makedirs(categ)
-		f = open(f"{categ}/{fname}", "w")
+		f = open(f"{categ}/{fname}", "w", encoding='utf-8')
 		f.write(replaced_string)
 		f.close()
 	except Exception as e:
